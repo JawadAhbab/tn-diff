@@ -3,6 +3,8 @@
 /.pnp
 .pnp.js
 
+/.dev/parcel/cache
+
 # testing
 /coverage
 
