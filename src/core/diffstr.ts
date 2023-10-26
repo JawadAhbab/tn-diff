@@ -1,6 +1,6 @@
 import { diffWords } from 'diff'
+type DiffMinChange = [1 | -1, string]
 export type DiffMin = (DiffMinChange | number)[]
-export type DiffMinChange = [1 | -1, string]
 
 export const diffstr = (prev: string, next: string) => {
   return diffWords(prev, next).map<DiffMin[number]>((d) => {
