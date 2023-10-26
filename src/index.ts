@@ -1,1 +1,1 @@
-export { charsDiff as chardiff } from './charsDiff/charsDiff'
+export { diffmin as chardiff } from './diffmin/diffmin'
