@@ -5,7 +5,7 @@
   "keywords": [],
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/types/src/index.d.ts",
   "scripts": {
     "Serve": "parcel .dev/parcel/index.html --dist-dir .dev/parcel/dist --cache-dir .dev/parcel/cache --open",
     "Build": "rimraf dist && rollup -c",
@@ -15,7 +15,10 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.23.2",
-    "diff": "^5.1.0"
+    "diff": "^5.1.0",
+    "tn-deepobj": "^2.1.0",
+    "tn-typescript": "^2.1.1",
+    "tn-validate": "^4.0.0"
   },
   "peerDependencies": {},
   "devDependencies": {
