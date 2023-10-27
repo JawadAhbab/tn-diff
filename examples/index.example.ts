@@ -1,36 +1,23 @@
-import { diffobj } from '../src/core/diffobj'
+import { diffstr } from '../src/core/diffstr'
+import { undostr } from '../src/core/undostr'
 
-const paraOne = {
-  person: { name: 'John Doe', age: 30, isStudent: false },
-  address: { street: '123 Main Street', city: 'Anytown', zipcode: '12345' },
-  hobbies: ['reading', 'docha', 'photography', 'hiking'],
-  contacts: [
-    { type: 'email', value: 'john.doe@example.com' },
-    { type: 'phone', value: '555-123-4567' },
-  ],
-}
-const paraTwo = {
-  person: { name: 'John Doe', age: 30, isStudent: false },
-  address: { street: '123 Main Street', city: 'Anytown', zipcode: '12345' },
-  hobbies: ['reading', 'docha', 'photography', 'hiking'],
-  contacts: [
-    { type: 'email', value: 'john.doe@example.com' },
-    { type: 'phone', value: '67738367' },
-  ],
-}
+const one = 'mocha docha locha uku'
+const two = 'docha uku locha'
+const three = 'docha uku mocha docha locha'
+const four = 'docha mocha docha uku locha'
 
-// const paraOne = {
-//   one: [1, true, false, { woo: true }],
-//   two: 'more',
-// }
+const diffone = diffstr(one, two)
+const difftwo = diffstr(two, three)
+const diffthree = diffstr(three, four)
 
-// const paraTwo = {
-//   one: [2, true, false, { woo: true, mocha: false }],
-//   three: 'more',
-// }
+console.log(JSON.stringify(diffone))
+console.log(JSON.stringify(difftwo))
+console.log(JSON.stringify(diffthree))
 
-const diff = diffobj(paraOne, paraTwo)
-console.log(diff[0])
-console.log(diff[1])
-console.log(diff[2])
-console.log(JSON.stringify(diff).length, JSON.stringify(diff))
+const undoone = undostr(four, diffthree)
+const undotwo = undostr(undoone, difftwo)
+const undothree = undostr(undotwo, diffone)
+console.log(four)
+console.log(undoone)
+console.log(undotwo)
+console.log(undothree)
