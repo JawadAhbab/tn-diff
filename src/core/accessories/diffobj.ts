@@ -16,10 +16,10 @@ export const diffobj = (prev: AnyObject, next: AnyObject, path: Path = []): Diff
   const prevkeys = array ? Array.from({ length: prev.length }).map((_, i) => i) : Object.keys(prev)
   const nextkeys = array ? Array.from({ length: next.length }).map((_, i) => i) : Object.keys(next)
   let delkeys = prevkeys as (string | number)[]
-  nextkeys.forEach((nextkey) => {
+  nextkeys.forEach(nextkey => {
     const currpath = [...path, nextkey]
     if (!prevkeys.includes(nextkey as never)) return adds.push([currpath, next[nextkey]])
-    delkeys = delkeys.filter((i) => i !== nextkey)
+    delkeys = delkeys.filter(i => i !== nextkey)
     const preval = prev[nextkey]
     const nextval = next[nextkey]
     if (isObject(nextval)) {
@@ -43,7 +43,7 @@ export const diffobj = (prev: AnyObject, next: AnyObject, path: Path = []): Diff
       upds.push([currpath, preval, nextval])
     }
   })
-  delkeys.forEach((delkey) => rems.push([[...path, delkey], prev[delkey]]))
+  delkeys.forEach(delkey => rems.push([[...path, delkey], prev[delkey]]))
 
   return [adds, rems, upds]
 }
