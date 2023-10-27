@@ -1,7 +1,8 @@
-import { diff } from '../src'
+import { diff, undo } from '../src'
 
-const one = true
-const two = true
+const one = { some: 'wokring more foss' }
+const two = { more: 'working better more' }
 
 const d = diff(one, two)
-console.log(JSON.stringify(d).length, JSON.stringify(d))
+
+console.log(undo(two, d))
