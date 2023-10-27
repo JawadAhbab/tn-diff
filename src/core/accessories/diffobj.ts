@@ -12,7 +12,7 @@ export const diffobj = (prev: AnyObject, next: AnyObject, path: Path = []): Diff
   const rems: DiffObjRems[] = []
   const upds: DiffObjUpds[] = []
 
-  const array = isArray(next) && isArray(prev)
+  const array = isArray(next)
   const prevkeys = array ? Array.from({ length: prev.length }).map((_, i) => i) : Object.keys(prev)
   const nextkeys = array ? Array.from({ length: next.length }).map((_, i) => i) : Object.keys(next)
   let delkeys = prevkeys as (string | number)[]

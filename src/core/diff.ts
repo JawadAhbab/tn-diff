@@ -2,12 +2,13 @@ import { isArray, isObject, isString } from 'tn-validate'
 import { DiffObj, diffobj } from './accessories/diffobj'
 import { DiffStr, diffstr } from './accessories/diffstr'
 export enum DiffKind {
+  IDENTICAL,
   STRING,
   OBJECT,
   STATIC,
 }
 export type Diff =
-  | []
+  | [Kind: DiffKind.IDENTICAL]
   | [Kind: DiffKind.STATIC, Prev: any, Value: any]
   | [Kind: DiffKind.STRING, DiffStr]
   | [Kind: DiffKind.OBJECT, DiffObj]
@@ -23,7 +24,7 @@ export const diff = (prev: any, next: any): Diff => {
     if (!isArray(prev)) return [DiffKind.STATIC, prev, next]
     return [DiffKind.OBJECT, diffobj(prev, next)]
   } else {
-    if (prev === next) return []
+    if (prev === next) return [DiffKind.IDENTICAL]
     return [DiffKind.STATIC, prev, next]
   }
 }
