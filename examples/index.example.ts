@@ -1,8 +1,8 @@
-import { diff, undo } from '../src'
+import { diff, redo } from '../src'
 
-const one = { some: 'wokring more foss' }
+const one = { some: 'wokring more foss', more: 'working' }
 const two = { more: 'working better more' }
 
 const d = diff(one, two)
 
-console.log(undo(two, d))
+console.log(redo(one, d))
