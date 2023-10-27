@@ -3,7 +3,7 @@ import { isArray, isObject, isString } from 'tn-validate'
 import { DiffStr, diffstr } from './diffstr'
 type Path = (string | number)[]
 type DiffObjAdds = [P: Path, Value: any]
-type DiffObjRems = Path
+type DiffObjRems = [P: Path, Value: any]
 type DiffObjUpds = [P: Path, Diff: DiffStr] | [P: Path, Prev: any, Value: any]
 export type DiffObj = [DiffObjAdds[], DiffObjRems[], DiffObjUpds[]]
 
@@ -43,7 +43,7 @@ export const diffobj = (prev: AnyObject, next: AnyObject, path: Path = []): Diff
       upds.push([currpath, preval, nextval])
     }
   })
-  delkeys.forEach((delkey) => rems.push([...path, delkey]))
+  delkeys.forEach((delkey) => rems.push([[...path, delkey], prev[delkey]]))
 
   return [adds, rems, upds]
 }

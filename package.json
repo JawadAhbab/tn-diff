@@ -16,7 +16,8 @@
   "dependencies": {
     "@babel/runtime": "^7.23.2",
     "diff": "^5.1.0",
-    "tn-deepobj": "^2.1.0",
+    "tn-cloneobj": "^2.0.0",
+    "tn-deepobj": "^2.2.0",
     "tn-typescript": "^2.1.1",
     "tn-validate": "^4.0.0"
   },
