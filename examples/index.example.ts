@@ -31,4 +31,6 @@ console.log(diffone)
 console.log(difftwo)
 
 const undoone = undoobj(three, difftwo)
+const undotwo = undoobj(undoone, diffone)
 console.log(undoone)
+console.log(undotwo)
