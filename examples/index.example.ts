@@ -1,8 +1,8 @@
 import { diff, redo } from '../src'
 
-const one = { some: 'wokring more foss', more: 'working' }
-const two = { more: 'working better more' }
+const one = '{ same: true }'
+const two = '{ same: true }'
 
 const d = diff(one, two)
 
-console.log(redo(one, d))
+console.log(JSON.stringify(d))

@@ -7,7 +7,7 @@
   "module": "dist/index.esm.js",
   "types": "dist/types/src/index.d.ts",
   "scripts": {
-    "Serve": "parcel .dev/parcel/index.html --dist-dir .dev/parcel/dist --cache-dir .dev/parcel/cache --open",
+    "Serve": "parcel .dev/parcel/index.html --dist-dir .dev/parcel/dist --cache-dir .dev/parcel/cache --open --port 1233",
     "Build": "rimraf dist && rollup -c",
     "Publish": "rimraf .dev/parcel/dist & rimraf .dev/parcel/cache && yarn run Build && yarn publish"
   },
