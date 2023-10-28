@@ -54,36 +54,36 @@ const diffobj = function (prev, next) {
   delkeys.forEach(delkey => rems.push([[...path, delkey], prev[delkey]]));
   return [adds, rems, upds];
 };
-var DiffKind;
+exports.DiffKind = void 0;
 (function (DiffKind) {
   DiffKind[DiffKind["IDENTICAL"] = 0] = "IDENTICAL";
   DiffKind[DiffKind["STRING"] = 1] = "STRING";
   DiffKind[DiffKind["OBJECT"] = 2] = "OBJECT";
   DiffKind[DiffKind["STATIC"] = 3] = "STATIC";
-})(DiffKind || (DiffKind = {}));
+})(exports.DiffKind || (exports.DiffKind = {}));
 const diff = (prev, next) => {
   const diffstring = () => {
     const diff = diffstr(prev, next);
     const identical = diff.length <= 1;
-    return identical ? [DiffKind.IDENTICAL] : [DiffKind.STRING, diff];
+    return identical ? [exports.DiffKind.IDENTICAL] : [exports.DiffKind.STRING, diff];
   };
   const diffobject = () => {
     const diff = diffobj(prev, next);
     const identical = !diff[0].length && !diff[1].length && !diff[2].length;
-    return identical ? [DiffKind.IDENTICAL] : [DiffKind.OBJECT, diff];
+    return identical ? [exports.DiffKind.IDENTICAL] : [exports.DiffKind.OBJECT, diff];
   };
   if (tnValidate.isString(next)) {
-    if (!tnValidate.isString(prev)) return [DiffKind.STATIC, prev, next];
+    if (!tnValidate.isString(prev)) return [exports.DiffKind.STATIC, prev, next];
     return diffstring();
   } else if (tnValidate.isObject(next)) {
-    if (!tnValidate.isObject(prev)) return [DiffKind.STATIC, prev, next];
+    if (!tnValidate.isObject(prev)) return [exports.DiffKind.STATIC, prev, next];
     return diffobject();
   } else if (tnValidate.isArray(next)) {
-    if (!tnValidate.isArray(prev)) return [DiffKind.STATIC, prev, next];
+    if (!tnValidate.isArray(prev)) return [exports.DiffKind.STATIC, prev, next];
     return diffobject();
   } else {
-    if (prev === next) return [DiffKind.IDENTICAL];
-    return [DiffKind.STATIC, prev, next];
+    if (prev === next) return [exports.DiffKind.IDENTICAL];
+    return [exports.DiffKind.STATIC, prev, next];
   }
 };
 const distance = diff => {
@@ -97,17 +97,17 @@ const distance = diff => {
     return 10;
   };
   const [kind] = diff;
-  if (kind === DiffKind.STRING) {
+  if (kind === exports.DiffKind.STRING) {
     const [, strdiff] = diff;
     return strdist(strdiff);
-  } else if (kind === DiffKind.OBJECT) {
+  } else if (kind === exports.DiffKind.OBJECT) {
     let dist = 0;
     const [, [adds, rems, upds]] = diff;
     dist += adds.length * 10;
     dist += rems.length * 10;
     upds.forEach(u => dist += u.length === 2 ? strdist(u[1]) : staticdist(u[1], u[2]));
     return dist;
-  } else if (kind === DiffKind.STATIC) {
+  } else if (kind === exports.DiffKind.STATIC) {
     const [, v1, v2] = diff;
     return staticdist(v1, v2);
   }
@@ -152,9 +152,9 @@ const undoobj = (curr, diff) => {
 };
 const undo = (curr, diff) => {
   const [kind] = diff;
-  if (kind === DiffKind.STATIC) return diff[1];
-  if (kind === DiffKind.STRING) return undostr(curr, diff[1]);
-  if (kind === DiffKind.OBJECT) return undoobj(curr, diff[1]);
+  if (kind === exports.DiffKind.STATIC) return diff[1];
+  if (kind === exports.DiffKind.STRING) return undostr(curr, diff[1]);
+  if (kind === exports.DiffKind.OBJECT) return undoobj(curr, diff[1]);
   return curr;
 };
 const merge = (currvalue, diffs) => {
@@ -216,9 +216,9 @@ const redoobj = (curr, diff) => {
 };
 const redo = (curr, diff) => {
   const [kind] = diff;
-  if (kind === DiffKind.STATIC) return diff[2];
-  if (kind === DiffKind.STRING) return redostr(curr, diff[1]);
-  if (kind === DiffKind.OBJECT) return redoobj(curr, diff[1]);
+  if (kind === exports.DiffKind.STATIC) return diff[2];
+  if (kind === exports.DiffKind.STRING) return redostr(curr, diff[1]);
+  if (kind === exports.DiffKind.OBJECT) return redoobj(curr, diff[1]);
   return curr;
 };
 exports.diff = diff;

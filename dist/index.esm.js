@@ -219,4 +219,4 @@ const redo = (curr, diff) => {
   if (kind === DiffKind.OBJECT) return redoobj(curr, diff[1]);
   return curr;
 };
-export { diff, distance, merge, mergeable, redo, undo };
+export { DiffKind, diff, distance, merge, mergeable, redo, undo };
