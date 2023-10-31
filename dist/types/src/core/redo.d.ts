@@ -1,2 +1,2 @@
 import { Diff } from './diff';
-export declare const redo: (curr: any, diff: Diff) => any;
+export declare const redo: <T>(curr: T, diff: Diff) => T;

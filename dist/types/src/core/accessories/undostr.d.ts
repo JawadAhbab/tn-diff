@@ -1,2 +1,2 @@
 import { DiffStr } from './diffstr';
-export declare const undostr: (curr: string, diff: DiffStr) => string;
+export declare const undostr: <T>(curr: T, diff: DiffStr) => T;

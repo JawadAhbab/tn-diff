@@ -1,6 +1,6 @@
+import { cloneobj } from 'tn-cloneobj';
 import { isArray, isObject, isString, isNumber, isBoolean } from 'tn-validate';
 import { diffChars } from 'diff';
-import { cloneobj } from 'tn-cloneobj';
 import { deepobj } from 'tn-deepobj';
 const diffstr = (prev, next) => {
   return diffChars(prev, next).map(d => {
@@ -70,19 +70,9 @@ const diff = (prev, next) => {
     const identical = !diff[0].length && !diff[1].length && !diff[2].length;
     return identical ? [DiffKind.IDENTICAL] : [DiffKind.OBJECT, diff];
   };
-  if (isString(next)) {
-    if (!isString(prev)) return [DiffKind.STATIC, prev, next];
-    return diffstring();
-  } else if (isObject(next)) {
-    if (!isObject(prev)) return [DiffKind.STATIC, prev, next];
-    return diffobject();
-  } else if (isArray(next)) {
-    if (!isArray(prev)) return [DiffKind.STATIC, prev, next];
-    return diffobject();
-  } else {
-    if (prev === next) return [DiffKind.IDENTICAL];
-    return [DiffKind.STATIC, prev, next];
-  }
+  let diff;
+  if (isString(next)) diff = isString(prev) ? diffstring() : [DiffKind.STATIC, prev, next];else if (isObject(next)) diff = isObject(prev) ? diffobject() : [DiffKind.STATIC, prev, next];else if (isArray(next)) diff = isArray(prev) ? diffobject() : [DiffKind.STATIC, prev, next];else diff = prev === next ? [DiffKind.IDENTICAL] : [DiffKind.STATIC, prev, next];
+  return cloneobj(diff);
 };
 const distance = diff => {
   const strdist = strdiff => {
@@ -112,8 +102,9 @@ const distance = diff => {
   return 0;
 };
 const undostr = (curr, diff) => {
+  const currstr = curr;
   const prev = [];
-  const currarr = curr.split('');
+  const currarr = currstr.split('');
   diff.forEach(df => {
     if (isNumber(df)) return prev.push(...currarr.splice(0, df));
     const [change, string] = df;
@@ -122,38 +113,37 @@ const undostr = (curr, diff) => {
   });
   return prev.join('');
 };
-const clone$1 = value => cloneobj(value, true, false);
 const undoobj = (curr, diff) => {
-  const obj = clone$1(curr);
+  const currobj = curr;
   const [adds, rems, upds] = diff;
   const dels = [...adds].reverse();
   dels.forEach(_ref => {
     let [path] = _ref;
-    return deepobj.delete(obj, path);
+    return deepobj.delete(currobj, path);
   });
   rems.forEach(_ref2 => {
     let [path, value] = _ref2;
-    return deepobj.set(obj, path, clone$1(value));
+    return deepobj.set(currobj, path, value);
   });
   upds.forEach(upd => {
     const [path] = upd;
     if (upd.length === 2) {
       const diff = upd[1];
-      const nextval = undostr(deepobj.get(obj, path), diff);
-      deepobj.set(obj, path, clone$1(nextval));
+      const nextval = undostr(deepobj.get(currobj, path), diff);
+      deepobj.set(currobj, path, nextval);
     } else {
       const preval = upd[1];
-      deepobj.set(obj, path, clone$1(preval));
+      deepobj.set(currobj, path, preval);
     }
   });
-  return obj;
+  return currobj;
 };
 const undo = (curr, diff) => {
   const [kind] = diff;
-  if (kind === DiffKind.STATIC) return diff[1];
-  if (kind === DiffKind.STRING) return undostr(curr, diff[1]);
-  if (kind === DiffKind.OBJECT) return undoobj(curr, diff[1]);
-  return curr;
+  const currval = cloneobj(curr, true, false);
+  let undoval;
+  if (kind === DiffKind.STATIC) undoval = diff[1];else if (kind === DiffKind.STRING) undoval = undostr(currval, diff[1]);else if (kind === DiffKind.OBJECT) undoval = undoobj(currval, diff[1]);else return currval;
+  return cloneobj(undoval, true, false);
 };
 const merge = (currvalue, diffs) => {
   let prevalue = currvalue;
@@ -176,8 +166,9 @@ const mergeable = (maxdistance, currvalue, d1, d2) => {
   };
 };
 const redostr = (curr, diff) => {
+  const currstr = curr;
   const prev = [];
-  const currarr = curr.split('');
+  const currarr = currstr.split('');
   diff.forEach(df => {
     if (isNumber(df)) return prev.push(...currarr.splice(0, df));
     const [change, string] = df;
@@ -186,37 +177,36 @@ const redostr = (curr, diff) => {
   });
   return prev.join('');
 };
-const clone = value => cloneobj(value, true, false);
 const redoobj = (curr, diff) => {
-  const obj = clone(curr);
+  const currobj = curr;
   const [adds, rems, upds] = diff;
   const dels = [...rems].reverse();
   dels.forEach(_ref3 => {
     let [path] = _ref3;
-    return deepobj.delete(obj, path);
+    return deepobj.delete(currobj, path);
   });
   adds.forEach(_ref4 => {
     let [path, value] = _ref4;
-    return deepobj.set(obj, path, clone(value));
+    return deepobj.set(currobj, path, value);
   });
   upds.forEach(upd => {
     const [path] = upd;
     if (upd.length === 2) {
       const diff = upd[1];
-      const nextval = redostr(deepobj.get(obj, path), diff);
-      deepobj.set(obj, path, clone(nextval));
+      const nextval = redostr(deepobj.get(currobj, path), diff);
+      deepobj.set(currobj, path, nextval);
     } else {
       const preval = upd[2];
-      deepobj.set(obj, path, clone(preval));
+      deepobj.set(currobj, path, preval);
     }
   });
-  return obj;
+  return currobj;
 };
 const redo = (curr, diff) => {
   const [kind] = diff;
-  if (kind === DiffKind.STATIC) return diff[2];
-  if (kind === DiffKind.STRING) return redostr(curr, diff[1]);
-  if (kind === DiffKind.OBJECT) return redoobj(curr, diff[1]);
-  return curr;
+  const currval = cloneobj(curr, true, false);
+  let redoval;
+  if (kind === DiffKind.STATIC) redoval = diff[2];else if (kind === DiffKind.STRING) redoval = redostr(currval, diff[1]);else if (kind === DiffKind.OBJECT) redoval = redoobj(currval, diff[1]);else redoval = currval;
+  return cloneobj(redoval, true, false);
 };
 export { DiffKind, diff, distance, merge, mergeable, redo, undo };
