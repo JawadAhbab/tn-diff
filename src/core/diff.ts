@@ -1,3 +1,4 @@
+import { cloneobj } from 'tn-cloneobj'
 import { isArray, isObject, isString } from 'tn-validate'
 import { DiffObj, diffobj } from './accessories/diffobj'
 import { DiffStr, diffstr } from './accessories/diffstr'
@@ -26,17 +27,10 @@ export const diff = (prev: any, next: any): Diff => {
     return identical ? [DiffKind.IDENTICAL] : [DiffKind.OBJECT, diff]
   }
 
-  if (isString(next)) {
-    if (!isString(prev)) return [DiffKind.STATIC, prev, next]
-    return diffstring()
-  } else if (isObject(next)) {
-    if (!isObject(prev)) return [DiffKind.STATIC, prev, next]
-    return diffobject()
-  } else if (isArray(next)) {
-    if (!isArray(prev)) return [DiffKind.STATIC, prev, next]
-    return diffobject()
-  } else {
-    if (prev === next) return [DiffKind.IDENTICAL]
-    return [DiffKind.STATIC, prev, next]
-  }
+  let diff: Diff
+  if (isString(next)) diff = isString(prev) ? diffstring() : [DiffKind.STATIC, prev, next]
+  else if (isObject(next)) diff = isObject(prev) ? diffobject() : [DiffKind.STATIC, prev, next]
+  else if (isArray(next)) diff = isArray(prev) ? diffobject() : [DiffKind.STATIC, prev, next]
+  else diff = prev === next ? [DiffKind.IDENTICAL] : [DiffKind.STATIC, prev, next]
+  return cloneobj(diff)
 }
